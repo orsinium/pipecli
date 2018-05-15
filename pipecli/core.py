@@ -1,12 +1,11 @@
+from functools import partial
 from itertools import chain
 
 
 class Command:
-    name = None
-    implement = None
-
-    require = ('root', )
-    optional = ()
+    implement = None        # implemented protocol: http, grep, facebook...
+    required = ('root', )   # required protocols into parents
+    optional = ()           # optional protocols into parents
 
     def __init__(self):
         self.subcommands = []
@@ -37,7 +36,7 @@ class Command:
                 subcommand.send((source, input_line))
 
             # process input line into current process
-            if source not in chain(self.require, self.optional):
+            if source not in chain(self.required, self.optional):
                 continue
             output_line = process.send((self.implement, input_line))
 
@@ -54,70 +53,24 @@ class Command:
         raise NotImplementedError
 
 
-class Root(Command):
-    name = 'root'
-    implement = 'root'
+class Catalog:
+    def __init__(self):
+        self.commands = dict()
 
-    def entrypoint(self):
-        for subcommand in self.subcommands:
-            subcommand = subcommand.entrypoint()
-            subcommand.send(None)
-            subcommand.send((self.implement, 0))
+    def register(self, name, command=None):
+        if not isinstance(name, str):
+            raise ValueError('Command name required')
+        if command:
+            return self._register(name, command)
+        else:
+            return partial(self._register, command)
 
-
-class MakeInit(Command):
-    name = 'init'
-    implement = 'generator'
-
-    def process(self):
-        yield  # get init params
-        for i in range(1, 4):
-            yield i
-
-
-class MakeDouble(Command):
-    name = 'double'
-    implement = 'number_operations'
-    require = ('generator', )
-
-    def process(self):
-        while 1:
-            src, x = yield
-            print(src, x * 2)
-            yield x * 2
+    def _register(self, name, command):
+        if not isinstance(command, Command):
+            raise ValueError('Command must be inherit from pipecli.Command')
+        if name in self.commands:
+            raise KeyError('Command already registered')
+        self.commands[name] = command
 
 
-class MakeStr(Command):
-    name = 'to_str'
-    implement = 'converting'
-    require = ('generator', )
-
-    def process(self):
-        while 1:
-            src, x = yield
-            print(src, x)
-            yield str(x)
-
-
-if __name__ == '__main__':
-    print('start')
-    root = Root()
-    test1 = MakeInit()
-    test2 = MakeDouble()
-    test3 = MakeStr()
-
-    test2.subcommands.append(test3)
-    test1.subcommands.append(test2)
-    root.subcommands.append(test1)
-
-    root.entrypoint()
-    print('end')
-
-    # start
-    # number_operations 2
-    # converting 2
-    # number_operations 4
-    # converting 4
-    # number_operations 6
-    # converting 6
-    # end
+commands = Catalog()
