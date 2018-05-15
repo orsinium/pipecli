@@ -2,8 +2,8 @@
 
 class Command:
     name = None
+    implement = None
 
-    implement = ()
     require = ()
     optional = ()
 
@@ -11,7 +11,7 @@ class Command:
         self.subcommands = []
 
     def entrypoint(self):
-        names = [command.name for command in self.subcommands]
+        implements = [command.implement for command in self.subcommands]
         subcommands = []
         for subcommand in self.subcommands:
             # point to entrypoint
@@ -31,8 +31,8 @@ class Command:
 
             output_line = process.send(input_line)
             while output_line is not None:
-                for name, subcommand in zip(names, subcommands):
-                    subcommand.send((name, output_line))
+                for implement, subcommand in zip(implements, subcommands):
+                    subcommand.send((implement, output_line))
                 try:
                     output_line = process.send(None)
                 except StopIteration:
@@ -54,6 +54,7 @@ class Root(Command):
 
 class MakeInit(Command):
     name = 'init'
+    implement = 'generator'
 
     def process(self):
         yield  # get init params
@@ -63,6 +64,8 @@ class MakeInit(Command):
 
 class MakeDouble(Command):
     name = 'double'
+    implement = 'number_operations'
+    require = 'generator'
 
     def process(self):
         while 1:
@@ -73,6 +76,8 @@ class MakeDouble(Command):
 
 class MakeStr(Command):
     name = 'to_str'
+    implement = 'converting'
+    require = 'generator'
 
     def process(self):
         while 1:
@@ -96,10 +101,10 @@ if __name__ == '__main__':
     print('end')
 
     # start
-    # double 2
-    # to_str 2
-    # double 4
-    # to_str 4
-    # double 6
-    # to_str 6
+    # number_operations 2
+    # converting 2
+    # number_operations 4
+    # converting 4
+    # number_operations 6
+    # converting 6
     # end
