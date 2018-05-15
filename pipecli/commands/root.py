@@ -3,7 +3,6 @@ from ..core import Command, commands
 
 @commands.register('root')
 class Root(Command):
-    name = 'root'
     implement = 'root'
 
     def entrypoint(self):
