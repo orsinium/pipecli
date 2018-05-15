@@ -1,4 +1,4 @@
-from ..core import Command, commands
+from ..core import Command, commands, cached_property
 import argparse
 
 
@@ -9,7 +9,7 @@ class Root(Command):
     def process(self):
         yield
 
-    @property
+    @cached_property
     def parser(self):
         parser = argparse.ArgumentParser()
         parser.add_argument("square", help="display a square of a given number", type=int)

@@ -9,6 +9,7 @@ class Command:
 
     def __init__(self):
         self.subcommands = []
+        self.args = {}
 
     def entrypoint(self):
         subcommands = []
@@ -51,6 +52,12 @@ class Command:
 
     def process(self):
         raise NotImplementedError
+
+    def update_args(self, args_string):
+        if not self.parser:
+            return
+        args = self.parser.parse_args(args_string.split())[0]
+        return self.args.update(dict(args._get_kwargs()))
 
 
 class Catalog:
