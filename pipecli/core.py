@@ -73,11 +73,10 @@ class Catalog:
             return partial(self._register, command)
 
     def _register(self, name, command):
-        if not isinstance(command, Command):
-            raise ValueError('Command must be inherit from pipecli.Command')
         if name in self.commands:
             raise KeyError('Command already registered')
         self.commands[name] = command
+        return command
 
 
 commands = Catalog()
