@@ -70,7 +70,7 @@ class Catalog:
         if command:
             return self._register(name, command)
         else:
-            return partial(self._register, command)
+            return partial(self._register, name)
 
     def _register(self, name, command):
         if name in self.commands:
