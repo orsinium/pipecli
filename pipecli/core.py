@@ -11,6 +11,7 @@ class Command:
         self.subcommands = []
 
     def entrypoint(self):
+        names = [command.name for command in self.subcommands]
         subcommands = []
         for subcommand in self.subcommands:
             # point to entrypoint
@@ -30,8 +31,8 @@ class Command:
 
             output_line = process.send(input_line)
             while output_line is not None:
-                for subcommand in subcommands:
-                    subcommand.send(output_line)
+                for name, subcommand in zip(names, subcommands):
+                    subcommand.send((name, output_line))
                 try:
                     output_line = process.send(None)
                 except StopIteration:
@@ -65,8 +66,8 @@ class MakeDouble(Command):
 
     def process(self):
         while 1:
-            x = yield
-            print('dbl', x * 2)
+            src, x = yield
+            print(src, x * 2)
             yield x * 2
 
 
@@ -75,8 +76,8 @@ class MakeStr(Command):
 
     def process(self):
         while 1:
-            x = yield
-            print('str', x)
+            src, x = yield
+            print(src, x)
             yield str(x)
 
 
@@ -93,3 +94,12 @@ if __name__ == '__main__':
 
     root.entrypoint()
     print('end')
+
+    # start
+    # double 2
+    # to_str 2
+    # double 4
+    # to_str 4
+    # double 6
+    # to_str 6
+    # end
