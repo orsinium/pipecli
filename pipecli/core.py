@@ -61,6 +61,10 @@ class Command:
             subcommand.send((self, output_message))
 
     @staticmethod
+    def get_parser():
+        return
+
+    @staticmethod
     def propagate(source, subcommand, input_message):
         subcommand.send((source, input_message))
 

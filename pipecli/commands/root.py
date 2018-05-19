@@ -1,12 +1,13 @@
 from ..core import Command, commands
 
 
-@commands.register('root')
+@commands.register
 class Root(Command):
-    implement = 'root'
+    name = 'root'
+    implement = {'root'}
 
     def entrypoint(self):
         for subcommand in self.subcommands:
             subcommand = subcommand.entrypoint()
             subcommand.send(None)
-            subcommand.send((self.implement, 0))
+            subcommand.send((self, 0))
