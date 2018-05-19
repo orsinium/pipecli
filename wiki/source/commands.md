@@ -5,7 +5,7 @@
 ### Definited
 
 * **name** (str) -- default name for command.
-* **implement** (str) -- that protocol this command implement.
+* **implement** (tuple) -- that protocols this command implement.
 * **required** (tuple) -- required protocols or names into command parents list. Command will get all messages from this commands.
 * **optional** (tuple) -- like `required`, but optional.
 
@@ -19,20 +19,20 @@
 
 * **entrypoint** -- entrypoint for command.
     * init subcommands entrypoints,
-    * init current `proccess`,
+    * init current `process`,
     * propagate messages to subcommands,
-    * send messages to `proccess`,
-    * send messages from `proccess` to subcommands.
+    * send messages to `process`,
+    * send messages from `process` to subcommands.
 * **propagate** -- propagate message from some parent to some subcommand. By default propagate all messages to all subcommands. Can be redefined some commands for messages filtering.
-* **proccess** -- main command logic.
-* **finish** -- calls after proccess end and can return last message for subcommands. Do nothing by default. Can be redefined for reduce-type commands.
+* **check_source** -- check message source. Can be redefined for input messages smart filtering.
+* **process** -- main command logic.
+* **finish** -- calls after process end and can return last message for subcommands. Do nothing by default. Can be redefined for reduce-type commands.
 * **get_parser** -- return `argparse` parser for `update_args`.
 * **update_args** -- update `args` dict from user input.
-* **rename** -- change command name.
 * **describe** -- return all info for command: description, allowed args, default values etc.
-* **flush** -- return new clear command instance.
+* **new** -- return new clear command instance.
 
-## Proccess structure
+## process structure
 
 **IMPORTANT:** Output message MUST NOT BE `None`! This is indicate end of cicle.
 

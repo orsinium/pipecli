@@ -19,7 +19,7 @@
 
 * **rename** -- change name for current command.
 * **args [list of args]** -- set arguments for current command.
-* **sources** -- change data sources for current command.
+* **sources [list of sources]** -- change data sources for current command.
 * **flush** -- clear all command params to default: name, arguments, sources.
 
 ## Execution

@@ -1,15 +1,20 @@
-from functools import partial
-from itertools import chain
 
 
 class Command:
-    implement = None        # implemented protocol: http, grep, facebook...
-    required = ('root', )   # required protocols into parents
-    optional = ()           # optional protocols into parents
+    name = None
+    implement = None    # implemented protocols: http, grep, facebook...
+    required = None     # required protocols into parents
+    optional = None     # optional protocols into parents
 
     def __init__(self):
         self.subcommands = []
         self.args = {}
+        if self.name is None:
+            raise ValueError('name can not be None')
+        if not self.implement:
+            self.implement = set()
+        self.sources = (self.required or set()) | (self.optional or set())
+        self.parser = self.get_parser()
 
     def entrypoint(self):
         subcommands = []
@@ -26,53 +31,76 @@ class Command:
         process.send(None)
 
         while 1:
-            # get line from parent
-            input_line = yield
-            if input_line is None:
+            # get message from parent
+            input_message = yield
+            if input_message is None:
                 break
-            source, input_line = input_line
+            source, input_message = input_message
 
-            # propagate input line to subprocesses
+            # propagate input_message to subcommands
             for subcommand in subcommands:
-                subcommand.send((source, input_line))
+                self.propagate(source, subcommand, input_message)
 
-            # process input line into current process
-            if source not in chain(self.required, self.optional):
+            # check if message must be ignored
+            if not self.check_source(source):
                 continue
-            output_line = process.send((self.implement, input_line))
 
-            # send line from current process to subprocesses
-            while output_line is not None:
+            # send message to current process
+            output_message = process.send((source, input_message))
+
+            # send messages from current process to subcommands
+            while output_message is not None:
                 for subcommand in subcommands:
-                    subcommand.send((self.implement, output_line))
+                    subcommand.send((self, output_message))
                 try:
-                    output_line = process.send(None)
+                    output_message = process.send(None)
                 except StopIteration:
                     break
 
+        for output_message in self.finish():
+            subcommand.send((self, output_message))
+
+    @staticmethod
+    def propagate(source, subcommand, input_message):
+        subcommand.send((source, input_message))
+
+    def check_source(self, source):
+        # source implement any allowed protocol
+        if source.implement & self.sources:
+            return True
+        # source name in allowed sources
+        if source.name in self.sources:
+            return True
+        return False
+
     def process(self):
-        raise NotImplementedError
+        yield
+
+    def finish(self):
+        return ()
 
     def update_args(self, args_string):
-        if not self.parser:
-            return
         args = self.parser.parse_args(args_string.split())[0]
         return self.args.update(dict(args._get_kwargs()))
+
+    def describe(self):
+        return dict(
+            description=self.__doc__,
+            args=self.parser.format_usage(),
+        )
+
+    @classmethod
+    def new(cls):
+        return cls()
 
 
 class Catalog:
     def __init__(self):
         self.commands = dict()
 
-    def register(self, name, command=None):
-        if not isinstance(name, str):
-            raise ValueError('Command name required')
-        if command:
-            return self._register(name, command)
-        else:
-            return partial(self._register, name)
-
-    def _register(self, name, command):
+    def register(self, command, name=None):
+        if not name:
+            name = command.name
         if name in self.commands:
             raise KeyError('Command already registered')
         self.commands[name] = command
