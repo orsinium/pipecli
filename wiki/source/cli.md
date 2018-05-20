@@ -7,6 +7,7 @@
 * **tree** -- show commands tree.
 * **describe [command_name]** -- show all info for command. Current command by default.
 * **list** -- show all loaded commands.
+* **help** -- I need somebody.
 
 ### Tree manipulation
 

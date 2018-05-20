@@ -83,8 +83,8 @@ class Command:
     def finish(self):
         return ()
 
-    def update_args(self, args_string):
-        args = self.parser.parse_args(args_string.split())[0]
+    def update_args(self, args):
+        args = self.parser.parse_args(args)[0]
         return self.args.update(dict(args._get_kwargs()))
 
     def describe(self):
