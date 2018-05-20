@@ -20,6 +20,11 @@ class Tree:
         for subcommand in parent.subcommands:
             return self._get_parent(command, subcommand)
 
+    def _get_command_by_name(self, name):
+        for el in self.tree():
+            if el.command.name == name:
+                return el.command
+
     def tree(self, command=None):
         if command is None:
             command = self.root
@@ -31,6 +36,7 @@ class Tree:
         return result
 
     def push(self, command):
+        command = command()
         self.pointer.subcommands.append(command)
         self.pointer = command
 

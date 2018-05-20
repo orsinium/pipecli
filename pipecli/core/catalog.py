@@ -1,14 +1,11 @@
 
-class Catalog:
-    def __init__(self):
-        self.commands = dict()
-
+class Catalog(dict):
     def register(self, command, name=None):
         if not name:
             name = command.name
-        if name in self.commands:
+        if name in self:
             raise KeyError('Command already registered')
-        self.commands[name] = command
+        self[name] = command
         return command
 
 
