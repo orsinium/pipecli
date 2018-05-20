@@ -4,8 +4,7 @@ from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.contrib.completers import WordCompleter
 # from prompt_toolkit import print_formatted_text, HTML
 
-from .commands.root import Root
-from .core import commands
+from .core import Tree
 
 
 class Formatter:
@@ -18,38 +17,6 @@ class Formatter:
     def error(text):
         return text
         # return HTML('<ansired>{}</ansired>'.format(text))
-
-
-class Tree:
-    def __init__(self):
-        self.root = Root()
-        self.pointer = self.root
-
-    def get_parent(self, command=None):
-        if not command:
-            command = self.pointer
-        pass
-
-    def get_name(self, command=None):
-        if not command:
-            command = self.pointer
-        pass
-
-    def get_tree(self):
-        pass
-
-    def push(self, command):
-        pass
-        return Formatter.success('Pushed!')
-
-    def pop(self):
-        pass
-
-    def rebase(self, command):
-        pass
-
-    def set(self, *args):
-        pass
 
 
 ACTIONS = ('push', 'pop', 'rebase', 'set')

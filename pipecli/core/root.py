@@ -1,4 +1,5 @@
-from ..core import Command, commands
+from .command import Command
+from .catalog import commands
 
 
 @commands.register
