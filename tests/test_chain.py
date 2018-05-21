@@ -48,7 +48,7 @@ def test_two_branches(chain):
     assert transform2.results == [4, 8, 12]
 
 
-def test_propagating(chain):
+def test_propagation(chain):
     generator = chain.subcommands[0]
     transform = generator.subcommands[0]
     transform2 = MultiplyTransform(debug=True)
