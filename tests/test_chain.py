@@ -30,8 +30,7 @@ def test_filtering(chain):
     generator = chain.subcommands[0]
     transform = generator.subcommands[0]
 
-    assert generator.implement & transform.required
-    assert transform.sources == transform.required | transform.optional == frozenset({'integer'})
+    assert generator.implement & transform.sources
     assert transform.filter_processing(generator, '')
 
 
@@ -47,3 +46,15 @@ def test_two_branches(chain):
     assert generator.results == [1, 2, 3]
     assert transform.results == [2, 4, 6]
     assert transform2.results == [4, 8, 12]
+
+
+def test_propagating(chain):
+    generator = chain.subcommands[0]
+    transform = generator.subcommands[0]
+    transform2 = MultiplyTransform(debug=True)
+    transform.subcommands.append(transform2)
+
+    chain.run()
+    assert generator.results == [1, 2, 3]
+    assert transform.results == [2, 4, 6]
+    assert transform2.results == [2, 4, 4, 8, 6, 12]

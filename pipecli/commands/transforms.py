@@ -7,7 +7,7 @@ class StrTransform(Command):
     """
     name = 'transform/string'
     implement = frozenset({'text', 'string'})
-    optional = frozenset({'integer'})
+    sources = frozenset({'integer'})
 
     def process(self):
         while 1:
@@ -21,7 +21,7 @@ class MultiplyTransform(Command):
     """
     name = 'transform/multiply'
     implement = frozenset({'integer', 'number'})
-    required = frozenset({'integer'})
+    sources = frozenset({'integer', 'number'})
 
     @staticmethod
     def get_parser(parser):

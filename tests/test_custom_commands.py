@@ -4,7 +4,7 @@ from pipecli import Command, Root
 class MakeInit(Command):
     name = 'init'
     implement = {'generator'}
-    required = {'root'}
+    sources = {'root'}
 
     def process(self):
         self.result = []
@@ -17,7 +17,7 @@ class MakeInit(Command):
 class MakeDouble(Command):
     name = 'double'
     implement = {'number_operations'}
-    required = {'generator'}
+    sources = {'generator'}
 
     def process(self):
         self.result = []
@@ -30,7 +30,7 @@ class MakeDouble(Command):
 class MakeStr(Command):
     name = 'str'
     implement = {'converting'}
-    required = {'number_operations'}
+    sources = {'number_operations'}
 
     def process(self):
         self.result = []

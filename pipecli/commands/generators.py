@@ -7,7 +7,7 @@ class IntegersGenerator(Command):
     """
     name = 'generate/integers'
     implement = frozenset({'integer', 'number'})
-    required = frozenset({'root'})
+    sources = frozenset({'root'})
 
     @staticmethod
     def get_parser(parser):

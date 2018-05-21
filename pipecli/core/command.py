@@ -4,8 +4,7 @@ from argparse import ArgumentParser
 class Command:
     name = None
     implement = frozenset()     # implemented protocols: http, grep, facebook...
-    required = frozenset()      # required protocols into parents
-    optional = frozenset()      # optional protocols into parents
+    sources = frozenset()       # source messages protocols
 
     def __init__(self, debug=False):
         self.flush()
@@ -19,7 +18,6 @@ class Command:
         if self.__class__.name is None:
             raise ValueError('name can not be None')
         self.name = self.__class__.name
-        self.sources = self.required | self.optional
         self.parser = self.get_parser(ArgumentParser())
         self.update_args([])    # set default args
 
