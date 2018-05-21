@@ -71,7 +71,7 @@ class Tree:
     def flush(self, command=None):
         if command is None:
             command = self.pointer
-        ...
+        command.flush()
 
     def run(self):
         list(self.root.entrypoint())

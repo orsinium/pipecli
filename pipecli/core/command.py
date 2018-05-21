@@ -1,3 +1,4 @@
+from argparse import ArgumentParser
 
 
 class Command:
@@ -16,7 +17,7 @@ class Command:
             raise ValueError('name can not be None')
         self.name = self.__class__.name
         self.sources = self.required | self.optional
-        self.parser = self.get_parser()
+        self.parser = self.get_parser(ArgumentParser())
 
     def entrypoint(self):
         subcommands = []
@@ -29,7 +30,7 @@ class Command:
             subcommands.append(subcommand)
 
         # get generator for proccess and go to first yield
-        process = self.process()
+        process = self.process(**self.args)
         process.send(None)
 
         while 1:
@@ -38,6 +39,7 @@ class Command:
             if input_message is None:
                 break
             source, input_message = input_message
+            assert input_message is not None, "message can not be None"
 
             # propagate input_message to subcommands
             for subcommand in subcommands:
@@ -64,8 +66,8 @@ class Command:
             subcommand.send((self, output_message))
 
     @staticmethod
-    def get_parser():
-        return
+    def get_parser(parser):
+        return parser
 
     def filter_propagation(self, source, input_message):
         return True

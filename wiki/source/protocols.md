@@ -4,6 +4,7 @@
 
 * **root**.
 * **text**.
+* **integer**
 * **html**.
 * **xml**.
 * **sql**.
@@ -19,8 +20,7 @@
 * **discover**. Read data from files, websites etc. Get sources from parent.
 * **transform**. Convert one input to other.
 * **extract**. Extract some data from message.
-* **combine**. Get messages from two or more parents and make new messages from it. 
+* **combine**. Get messages from two or more parents and make new messages from it.
 * **filter**. Filter input messages by regex or other conditions.
 * **reduce**. Combine all messages into one.
 * **output**. Save input messages into file, stdout or other output.
-
