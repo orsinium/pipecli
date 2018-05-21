@@ -7,8 +7,11 @@ class Command:
     required = frozenset()      # required protocols into parents
     optional = frozenset()      # optional protocols into parents
 
-    def __init__(self):
+    def __init__(self, debug=False):
         self.flush()
+        self.debug = debug
+        if debug:
+            self.results = []
 
     def flush(self):
         self.subcommands = []
@@ -18,6 +21,7 @@ class Command:
         self.name = self.__class__.name
         self.sources = self.required | self.optional
         self.parser = self.get_parser(ArgumentParser())
+        self.update_args([])    # set default args
 
     def entrypoint(self):
         subcommands = []
@@ -55,6 +59,8 @@ class Command:
 
             # send messages from current process to subcommands
             while output_message is not None:
+                if self.debug:
+                    self.results.append(output_message)
                 for subcommand in subcommands:
                     subcommand.send((self, output_message))
                 try:
@@ -88,7 +94,7 @@ class Command:
         return ()
 
     def update_args(self, args):
-        args = self.parser.parse_args(args)[0]
+        args, _argv = self.parser.parse_known_args(args)
         return self.args.update(dict(args._get_kwargs()))
 
     def describe(self):

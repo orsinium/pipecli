@@ -26,6 +26,7 @@ class MultiplyTransform(Command):
     @staticmethod
     def get_parser(parser):
         parser.add_argument('--n', type=int, default=2)
+        return parser
 
     def process(self, n):
         while 1:

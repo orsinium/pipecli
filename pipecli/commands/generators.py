@@ -6,7 +6,7 @@ class IntegersGenerator(Command):
     """Return sequence of integers from start (inclusive) to stop (inclusive) by step.
     """
     name = 'generate/integers'
-    implements = frozenset({'integer'})
+    implements = frozenset({'integer', 'number'})
     required = frozenset({'root'})
 
     @staticmethod
@@ -14,6 +14,7 @@ class IntegersGenerator(Command):
         parser.add_argument('--start', type=int, default=1)
         parser.add_argument('--stop', type=int)
         parser.add_argument('--step', type=int, default=1, help='can be negative')
+        return parser
 
     def process(self, start, stop, step):
         yield

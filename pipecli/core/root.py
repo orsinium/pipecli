@@ -12,3 +12,6 @@ class Root(Command):
             subcommand = subcommand.entrypoint()
             subcommand.send(None)
             subcommand.send((self, 0))
+
+    def run(self):
+        return self.entrypoint()
