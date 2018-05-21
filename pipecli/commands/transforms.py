@@ -25,10 +25,10 @@ class MultiplyTransform(Command):
 
     @staticmethod
     def get_parser(parser):
-        parser.add_argument('--n', type=int, default=2)
+        parser.add_argument('-n', '--multiplier', type=int, default=2)
         return parser
 
-    def process(self, n):
+    def process(self, multiplier):
         while 1:
             source, message = yield
-            yield message * n
+            yield message * multiplier

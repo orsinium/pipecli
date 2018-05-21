@@ -33,3 +33,17 @@ def test_filtering(chain):
     assert generator.implement & transform.required
     assert transform.sources == transform.required | transform.optional == frozenset({'integer'})
     assert transform.filter_processing(generator, '')
+
+
+def test_two_branches(chain):
+    generator = chain.subcommands[0]
+    transform = generator.subcommands[0]
+
+    transform2 = MultiplyTransform(debug=True)
+    transform2.update_args(['-n', '4'])
+    generator.subcommands.append(transform2)
+
+    chain.run()
+    assert generator.results == [1, 2, 3]
+    assert transform.results == [2, 4, 6]
+    assert transform2.results == [4, 8, 12]
