@@ -2,18 +2,20 @@
 
 class Command:
     name = None
-    implement = None    # implemented protocols: http, grep, facebook...
-    required = None     # required protocols into parents
-    optional = None     # optional protocols into parents
+    implement = frozenset()     # implemented protocols: http, grep, facebook...
+    required = frozenset()      # required protocols into parents
+    optional = frozenset()      # optional protocols into parents
 
     def __init__(self):
+        self.flush()
+
+    def flush(self):
         self.subcommands = []
         self.args = {}
-        if self.name is None:
+        if self.__class__.name is None:
             raise ValueError('name can not be None')
-        if not self.implement:
-            self.implement = set()
-        self.sources = (self.required or set()) | (self.optional or set())
+        self.name = self.__class__.name
+        self.sources = self.required | self.optional
         self.parser = self.get_parser()
 
     def entrypoint(self):
@@ -39,10 +41,11 @@ class Command:
 
             # propagate input_message to subcommands
             for subcommand in subcommands:
-                self.propagate(source, subcommand, input_message)
+                if self.filter_propagation(source, input_message):
+                    subcommand.send((source, input_message))
 
             # check if message must be ignored
-            if not self.check_source(source):
+            if not self.filter_processing(source, input_message):
                 continue
 
             # send message to current process
@@ -64,11 +67,10 @@ class Command:
     def get_parser():
         return
 
-    @staticmethod
-    def propagate(source, subcommand, input_message):
-        subcommand.send((source, input_message))
+    def filter_propagation(self, source, input_message):
+        return True
 
-    def check_source(self, source):
+    def filter_processing(self, source, input_message):
         # source implement any allowed protocol
         if source.implement & self.sources:
             return True
@@ -92,7 +94,3 @@ class Command:
             description=self.__doc__,
             args=self.parser.format_usage(),
         )
-
-    @classmethod
-    def new(cls):
-        return cls()
