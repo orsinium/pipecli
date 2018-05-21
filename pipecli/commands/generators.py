@@ -6,7 +6,7 @@ class IntegersGenerator(Command):
     """Return sequence of integers from start (inclusive) to stop (inclusive) by step.
     """
     name = 'generate/integers'
-    implements = frozenset({'integer', 'number'})
+    implement = frozenset({'integer', 'number'})
     required = frozenset({'root'})
 
     @staticmethod

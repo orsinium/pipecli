@@ -21,7 +21,15 @@ def test_run(chain):
     chain.run()
     generator = chain.subcommands[0]
     transform = generator.subcommands[0]
-    assert generator.implements & transform.required
-    assert transform.sources == transform.required | transform.optional == frozenset({'integer'})
+
     assert generator.results == [1, 2, 3]
     assert transform.results == [2, 4, 6]
+
+
+def test_filtering(chain):
+    generator = chain.subcommands[0]
+    transform = generator.subcommands[0]
+
+    assert generator.implement & transform.required
+    assert transform.sources == transform.required | transform.optional == frozenset({'integer'})
+    assert transform.filter_processing(generator, '')

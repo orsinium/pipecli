@@ -6,7 +6,7 @@ class StrTransform(Command):
     """Transform any message to string.
     """
     name = 'transform/string'
-    implements = frozenset({'text', 'string'})
+    implement = frozenset({'text', 'string'})
     optional = frozenset({'integer'})
 
     def process(self):
@@ -20,7 +20,7 @@ class MultiplyTransform(Command):
     """Multiply integer numbers to n.
     """
     name = 'transform/multiply'
-    implements = frozenset({'integer', 'number'})
+    implement = frozenset({'integer', 'number'})
     required = frozenset({'integer'})
 
     @staticmethod
