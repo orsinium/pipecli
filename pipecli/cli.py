@@ -38,7 +38,10 @@ class ProxyTree:
                 return 'command not found'
             return method(command, *args[1:])
 
-        return method(*args)
+        result = method(*args)
+        if type(result) is list:
+            result = '\n'.join(result)
+        return result
 
     def __getattr__(self, name):
         return partial(self.getter, name)
@@ -56,7 +59,6 @@ class ProxyTree:
                 line.extend(['[', ', '.join(sorted(el.command.sources)), ']'])
             if el.is_pointer:
                 line.append(' <--- you are here')
-            
             result.append(''.join(line))
         return '\n'.join(result)
 

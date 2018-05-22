@@ -1,7 +1,9 @@
+import fnmatch
 from importlib import import_module
 from importlib.util import spec_from_file_location, module_from_spec
 from pathlib import Path
 from collections import namedtuple
+from .catalog import commands
 from .root import Root
 
 
@@ -77,6 +79,7 @@ class Tree:
         command.flush()
 
     def load(self, path):
+        exists = set(commands)
         # file
         if path.endswith('.py'):
             # get module info
@@ -90,6 +93,15 @@ class Tree:
         # module name
         else:
             import_module(path)
+        # return list of loaded commands
+        loaded = set(commands) - exists
+        return sorted(list(loaded))
+
+    def list(self, pattern=None):
+        result = list(commands)
+        if pattern:
+            result = fnmatch.filter(names=result, pattern=pattern)
+        return sorted(result)
 
     def run(self):
         self.root.run()
