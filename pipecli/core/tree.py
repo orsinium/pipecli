@@ -1,3 +1,6 @@
+from importlib import import_module
+from importlib.util import spec_from_file_location, module_from_spec
+from pathlib import Path
 from collections import namedtuple
 from .root import Root
 
@@ -73,8 +76,23 @@ class Tree:
             command = self.pointer
         command.flush()
 
+    def load(self, path):
+        # file
+        if path.endswith('.py'):
+            # get module info
+            path = Path(path)
+            module_name = path.stem
+            full_path = path.absolute()
+            # load module
+            spec = spec_from_file_location(module_name, full_path)
+            module = module_from_spec(spec)
+            spec.loader.exec_module(module)
+        # module name
+        else:
+            import_module(path)
+
     def run(self):
-        list(self.root.entrypoint())
+        self.root.run()
 
     def pause(self):
         ...
