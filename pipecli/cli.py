@@ -31,19 +31,19 @@ class ProxyTree:
 
         # call method
         result = method(*args)
-        if type(result) is list:
+        if isinstance(result, list):
             result = '\n'.join(result)
         return result
 
     def __getattr__(self, name):
         return partial(self.getter, name)
 
-    def push(self, command_name):
+    def push(self, command_name, *args):
         if command_name not in commands:
             self._tree.logger.error('command not found')
             return
         command = commands[command_name]
-        return self._tree.push(command)
+        return self._tree.push(command, *args)
 
     def tree(self):
         tree = self._tree.tree()

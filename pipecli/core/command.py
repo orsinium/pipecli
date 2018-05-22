@@ -18,7 +18,11 @@ class Command:
         if self.__class__.name is None:
             raise ValueError('name can not be None')
         self.name = self.__class__.name
-        self.parser = self.get_parser(ArgumentParser())
+        self.parser = self.get_parser(ArgumentParser(
+            prog='args',
+            description=self.__doc__,
+            add_help=False,
+        ))
         self.update_args([])    # set default args
 
     def entrypoint(self):
@@ -96,7 +100,12 @@ class Command:
         return self.args.update(dict(args._get_kwargs()))
 
     def describe(self):
-        return dict(
-            description=self.__doc__,
-            args=self.parser.format_usage(),
-        )
+        descr = self.parser.format_help()
+        defaults = []
+        for k, v in self.args.items():
+            if v is None:
+                defaults.append('  {} has no value'.format(k))
+            else:
+                defaults.append('  {} = {}'.format(k, v))
+        defaults = '\n'.join(sorted(defaults))
+        return descr + '\nCurrent values:\n' + defaults

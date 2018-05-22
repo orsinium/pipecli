@@ -46,11 +46,13 @@ class Tree:
             result.extend(subtree)
         return result
 
-    def push(self, command):
+    def push(self, command, *args):
         command = command()
         self.pointer.subcommands.append(command)
         self.pointer = command
         self.logger.info('pushed')
+        if args:
+            self.args(*args)
         return True
 
     def pop(self, command=None):
@@ -106,6 +108,11 @@ class Tree:
         self.logger.info('flushed')
         return True
 
+    def describe(self, command=None):
+        if command is None:
+            command = self.pointer
+        return command.describe()
+
     def load(self, path):
         exists = set(commands)
         # file
@@ -116,7 +123,7 @@ class Tree:
                 self.logger.error('file not found')
                 return []
             module_name = path.stem
-            full_path = path.absolute()
+            full_path = str(path.absolute())
             # load module
             spec = spec_from_file_location(module_name, full_path)
             module = module_from_spec(spec)
