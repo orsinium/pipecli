@@ -2,6 +2,10 @@ from argparse import ArgumentParser
 
 
 class Command:
+    """
+    class    | command | some actions set. Get massages and generate new messages.
+    instance | task    | one node of tree. Command, prepared to execution.
+    """
     name = None
     implement = frozenset()     # implemented protocols: http, grep, facebook...
     sources = frozenset()       # source messages protocols
@@ -13,6 +17,8 @@ class Command:
             self.results = []
 
     def flush(self):
+        """Flush task to default params from command.
+        """
         self.subtasks = []
         self.args = {}
         if self.__class__.name is None:
@@ -26,6 +32,16 @@ class Command:
         self.update_args([])    # set default args
 
     def entrypoint(self):
+        """entrypoint for task.
+
+        Do not redefine it into childs!
+
+        * init subtasks entrypoints,
+        * init current `process`,
+        * propagate messages to subtasks,
+        * send messages to `process`,
+        * send messages from `process` to subtasks.
+        """
         subtasks = []
         for subtask in self.subtasks:
             # point to entrypoint
@@ -75,12 +91,18 @@ class Command:
 
     @staticmethod
     def get_parser(parser):
+        """Return `argparse` parser with args for `process` methods.
+        """
         return parser
 
     def filter_propagation(self, source, input_message):
+        """Return True for messages that must be propagated.
+        """
         return True
 
     def filter_processing(self, source, input_message):
+        """Return True for messages that must be processed in current task
+        """
         # source implement any allowed protocol
         if source.implement & self.sources:
             return True
@@ -90,16 +112,35 @@ class Command:
         return False
 
     def process(self):
+        """Main task logic.
+        Get messages and return some messages for each.
+
+        Get message:
+        ```
+        source, message = yield
+        ```
+
+        Return new message:
+        ```
+        yield message
+        ```
+        """
         yield
 
     def finish(self):
+        """Logic after parent task finishing. Must return any iterator.
+        """
         return ()
 
     def update_args(self, args):
+        """Update `args` dict from user input
+        """
         args, _argv = self.parser.parse_known_args(args)
         return self.args.update(dict(args._get_kwargs()))
 
     def describe(self):
+        """Return task text description.
+        """
         descr = self.parser.format_help()
         defaults = []
         for k, v in self.args.items():
