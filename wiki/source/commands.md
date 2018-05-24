@@ -11,22 +11,22 @@
 
 ### Generated
 
-* **subcommands** (list) -- subcommands list for command into tree.
+* **subtasks** (list) -- subtasks list for command into tree.
 * **args** (dict) -- arguments for command.
 * **sources** (tuple) -- names and protocols for getting messages. `required` + `optional` by default, can be redifined by user.
 
 ## Methods
 
 * **entrypoint** -- entrypoint for command.
-    * init subcommands entrypoints,
+    * init subtasks entrypoints,
     * init current `process`,
-    * propagate messages to subcommands,
+    * propagate messages to subtasks,
     * send messages to `process`,
-    * send messages from `process` to subcommands.
-* **propagate** -- propagate message from some parent to some subcommand. By default propagate all messages to all subcommands. Can be redefined some commands for messages filtering.
+    * send messages from `process` to subtasks.
+* **propagate** -- propagate message from some parent to some subtask. By default propagate all messages to all subtasks. Can be redefined some commands for messages filtering.
 * **check_source** -- check message source. Can be redefined for input messages smart filtering.
 * **process** -- main command logic.
-* **finish** -- calls after process end and can return last message for subcommands. Do nothing by default. Can be redefined for reduce-type commands.
+* **finish** -- calls after process end and can return last message for subtasks. Do nothing by default. Can be redefined for reduce-type commands.
 * **get_parser** -- return `argparse` parser for `update_args`.
 * **update_args** -- update `args` dict from user input.
 * **describe** -- return all info for command: description, allowed args, default values etc.

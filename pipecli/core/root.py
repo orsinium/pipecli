@@ -8,10 +8,10 @@ class Root(Command):
     implement = {'root'}
 
     def entrypoint(self):
-        for subcommand in self.subcommands:
-            subcommand = subcommand.entrypoint()
-            subcommand.send(None)
-            subcommand.send((self, 0))
+        for subtask in self.subtasks:
+            subtask = subtask.entrypoint()
+            subtask.send(None)
+            subtask.send((self, 0))
 
     def run(self):
         return self.entrypoint()

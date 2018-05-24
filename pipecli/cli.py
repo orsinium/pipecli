@@ -20,14 +20,14 @@ class ProxyTree:
         if not args:
             return method()
 
-        # replace command name to command object
+        # replace task name to task object
         argspec = getargspec(method).args
-        if len(argspec) >= 2 and argspec[1] == 'command':
-            command = self._tree._get_command_by_name(args[0])
-            if command is None:
-                self._tree.logger.error('command not found')
+        if len(argspec) >= 2 and argspec[1] == 'task':
+            task = self._tree._get_task_by_name(args[0])
+            if task is None:
+                self._tree.logger.error('task not found')
                 return
-            args[0] = command
+            args[0] = task
 
         # call method
         result = method(*args)
@@ -49,9 +49,9 @@ class ProxyTree:
         tree = self._tree.tree()
         result = []
         for el in tree:
-            line = ['-' * el.deepth * 2, el.command.name]
-            if el.command.sources:
-                line.extend(['[', ', '.join(sorted(el.command.sources)), ']'])
+            line = ['-' * el.deepth * 2, el.task.name]
+            if el.task.sources:
+                line.extend(['[', ', '.join(sorted(el.task.sources)), ']'])
             if el.is_pointer:
                 line.append(' <--- you are here')
             result.append(''.join(line))

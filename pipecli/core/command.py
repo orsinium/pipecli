@@ -13,7 +13,7 @@ class Command:
             self.results = []
 
     def flush(self):
-        self.subcommands = []
+        self.subtasks = []
         self.args = {}
         if self.__class__.name is None:
             raise ValueError('name can not be None')
@@ -26,14 +26,14 @@ class Command:
         self.update_args([])    # set default args
 
     def entrypoint(self):
-        subcommands = []
-        for subcommand in self.subcommands:
+        subtasks = []
+        for subtask in self.subtasks:
             # point to entrypoint
-            subcommand = subcommand.entrypoint()
+            subtask = subtask.entrypoint()
             # go to first yield
-            subcommand.send(None)
+            subtask.send(None)
             # save generator to list
-            subcommands.append(subcommand)
+            subtasks.append(subtask)
 
         # get generator for proccess and go to first yield
         process = self.process(**self.args)
@@ -47,10 +47,10 @@ class Command:
             source, input_message = input_message
             assert input_message is not None, "message can not be None"
 
-            # propagate input_message to subcommands
-            for subcommand in subcommands:
+            # propagate input_message to subtasks
+            for subtask in subtasks:
                 if self.filter_propagation(source, input_message):
-                    subcommand.send((source, input_message))
+                    subtask.send((source, input_message))
 
             # check if message must be ignored
             if not self.filter_processing(source, input_message):
@@ -59,19 +59,19 @@ class Command:
             # send message to current process
             output_message = process.send((source, input_message))
 
-            # send messages from current process to subcommands
+            # send messages from current process to subtasks
             while output_message is not None:
                 if self.debug:
                     self.results.append(output_message)
-                for subcommand in subcommands:
-                    subcommand.send((self, output_message))
+                for subtask in subtasks:
+                    subtask.send((self, output_message))
                 try:
                     output_message = process.send(None)
                 except StopIteration:
                     break
 
         for output_message in self.finish():
-            subcommand.send((self, output_message))
+            subtask.send((self, output_message))
 
     @staticmethod
     def get_parser(parser):

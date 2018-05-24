@@ -7,7 +7,7 @@ from .catalog import commands
 from .root import Root
 
 
-TreeElement = namedtuple('TreeElement', ['deepth', 'command', 'is_pointer'])
+TreeElement = namedtuple('TreeElement', ['deepth', 'task', 'is_pointer'])
 
 
 class Tree:
@@ -16,61 +16,61 @@ class Tree:
         self.pointer = self.root
         self.logger = logger
 
-    def _get_parent(self, command=None, parent=None):
-        if command is None:
-            command = self.pointer
+    def _get_parent(self, task=None, parent=None):
+        if task is None:
+            task = self.pointer
         if parent is None:
             parent = self.root
-        if command in parent.subcommands:
+        if task in parent.subtasks:
             return parent
-        for subcommand in parent.subcommands:
-            result = self._get_parent(command, subcommand)
+        for subtask in parent.subtasks:
+            result = self._get_parent(task, subtask)
             if result:
                 return result
         if parent == self.root:
-            self.logger.error('parent for command not found')
+            self.logger.error('parent for task not found')
 
-    def _get_command_by_name(self, name):
+    def _get_task_by_name(self, name):
         for el in self.tree():
-            if el.command.name == name:
-                return el.command
-        self.logger.error('command not found')
+            if el.task.name == name:
+                return el.task
+        self.logger.error('task not found')
 
-    def tree(self, command=None):
-        if command is None:
-            command = self.root
-        is_pointer = (command is self.pointer)
-        result = [TreeElement(0, command, is_pointer)]
-        for subcommand in command.subcommands:
-            subtree = [el._replace(deepth=el.deepth + 1) for el in self.tree(subcommand)]
+    def tree(self, task=None):
+        if task is None:
+            task = self.root
+        is_pointer = (task is self.pointer)
+        result = [TreeElement(0, task, is_pointer)]
+        for subtask in task.subtasks:
+            subtree = [el._replace(deepth=el.deepth + 1) for el in self.tree(subtask)]
             result.extend(subtree)
         return result
 
     def push(self, command, *args):
-        command = command()
-        self.pointer.subcommands.append(command)
-        self.pointer = command
+        task = command()
+        self.pointer.subtasks.append(task)
+        self.pointer = task
         self.logger.info('pushed')
         if args:
             self.args(*args)
         return True
 
-    def pop(self, command=None):
-        if command is None:
-            command = self.pointer
-        self.pointer = self._get_parent(command)
+    def pop(self, task=None):
+        if task is None:
+            task = self.pointer
+        self.pointer = self._get_parent(task)
         if self.pointer is None:
             return False
-        self.pointer.subcommands = [cmd for cmd in self.pointer.subcommands if cmd is not command]
+        self.pointer.subtasks = [cmd for cmd in self.pointer.subtasks if cmd is not task]
         self.logger.info('poped')
         return True
 
-    def goto(self, command):
+    def goto(self, task):
         for el in self.tree():
-            if el.command is command:
-                self.pointer = command
+            if el.task is task:
+                self.pointer = task
                 return True
-        self.logger.error('command not found in tree')
+        self.logger.error('task not found in tree')
         return False
 
     def reset(self, *args):
@@ -79,39 +79,39 @@ class Tree:
         self.logger.info('reseted')
         return True
 
-    def rename(self, command=None, name=None):
-        if type(command) is str and name is None:
-            command, name = name, command
+    def rename(self, task=None, name=None):
+        if type(task) is str and name is None:
+            task, name = name, task
         if name is None:
             self.logger.error('new name required')
             return False
-        if command is None:
-            command = self.pointer
-        command.name = name
+        if task is None:
+            task = self.pointer
+        task.name = name
         self.logger.info('renamed')
         return True
 
     def args(self, *args):
-        command = self.pointer
-        return command.update_args(args)
+        task = self.pointer
+        return task.update_args(args)
 
     def sources(self, *sources):
-        command = self.pointer
-        command.sources = set(sources)
+        task = self.pointer
+        task.sources = set(sources)
         self.logger.info('sources changed')
         return True
 
-    def flush(self, command=None):
-        if command is None:
-            command = self.pointer
-        command.flush()
+    def flush(self, task=None):
+        if task is None:
+            task = self.pointer
+        task.flush()
         self.logger.info('flushed')
         return True
 
-    def describe(self, command=None):
-        if command is None:
-            command = self.pointer
-        return command.describe()
+    def describe(self, task=None):
+        if task is None:
+            task = self.pointer
+        return task.describe()
 
     def load(self, path):
         exists = set(commands)
@@ -135,12 +135,12 @@ class Tree:
             except ImportError:
                 self.logger.error('module not found')
                 return []
-        # return list of loaded commands
+        # return list of loaded tasks
         loaded = set(commands) - exists
         if loaded:
             self.logger.info('loaded')
         else:
-            self.logger.warning('loaded 0 commands')
+            self.logger.warning('loaded 0 tasks')
         return sorted(list(loaded))
 
     def list(self, pattern=None):
