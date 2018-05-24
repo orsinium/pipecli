@@ -23,14 +23,19 @@ class StdinInput(BaseInput):
     name = 'input/stdin'
     _file = sys.stdin
 
+    @staticmethod
+    def get_parser(parser):
+        parser.add_argument('--lines', type=int, help="Maximum readed lines")
+        return parser
+
 
 @commands.register
-class FileOutput(BaseInput):
+class FileInput(BaseInput):
     name = 'input/file'
     _file = None
 
     @staticmethod
     def get_parser(parser):
-        parser.add_argument('--name', default='out.txt')
+        parser.add_argument('--name', default='in.txt')
         parser.add_argument('--lines', type=int, help="Maximum readed lines")
         return parser

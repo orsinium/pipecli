@@ -1,3 +1,5 @@
+from string import ascii_letters
+from itertools import product
 from ..core import Command, commands
 
 
@@ -19,3 +21,25 @@ class IntegersGenerator(Command):
     def process(self, start, stop, step):
         yield
         yield from range(start, stop + 1, step)
+
+
+@commands.register
+class WordsGenerator(Command):
+    """Return sequence of symbols from start (inclusive) to stop (inclusive) length.
+    """
+    name = 'generate/words'
+    implement = frozenset({'word', 'text'})
+    sources = frozenset({'root'})
+
+    @staticmethod
+    def get_parser(parser):
+        parser.add_argument('--alphabet', default=ascii_letters)
+        parser.add_argument('--start', type=int, default=4, help='minimum length')
+        parser.add_argument('--stop', type=int, default=4, help='maximum length')
+        return parser
+
+    def process(self, alphabet, start, stop):
+        yield
+        for length in range(start, stop):
+            for letters in product(*([alphabet] * length)):
+                yield ''.join(letters)
