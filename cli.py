@@ -1,4 +1,4 @@
-from pipecli.cli import cli
+from exec.cli import cli
 
 
 cli()

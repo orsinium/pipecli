@@ -1,8 +1,8 @@
 import pytest
 
-from pipecli import Root
-from pipecli.commands.generators import IntegersGenerator
-from pipecli.commands.transforms import MultiplyTransform
+from exec import Root
+from exec.commands.generators import IntegersGenerator
+from exec.commands.transforms import MultiplyTransform
 
 
 @pytest.fixture

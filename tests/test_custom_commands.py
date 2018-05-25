@@ -1,4 +1,4 @@
-from pipecli import Command, Root
+from exec import Command, Root
 
 
 class MakeInit(Command):
