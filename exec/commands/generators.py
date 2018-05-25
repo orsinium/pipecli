@@ -1,6 +1,6 @@
 from string import ascii_letters
 from itertools import product
-from ..core import Command, commands
+from exec import Command, commands
 
 
 @commands.register

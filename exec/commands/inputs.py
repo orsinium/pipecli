@@ -1,5 +1,5 @@
 import sys
-from ..core import Command, commands
+from exec import Command, commands
 
 
 class BaseInput(Command):

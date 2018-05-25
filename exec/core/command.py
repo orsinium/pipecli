@@ -148,5 +148,7 @@ class Command:
                 defaults.append('  {} has no value'.format(k))
             else:
                 defaults.append('  {} = {}'.format(k, v))
+        if not defaults:
+            return descr
         defaults = '\n'.join(sorted(defaults))
         return descr + '\nCurrent values:\n' + defaults

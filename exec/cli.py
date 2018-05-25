@@ -7,8 +7,13 @@ from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.contrib.completers import WordCompleter
 # from prompt_toolkit import print_formatted_text, HTML
 
-from .core import Tree, commands
+from .core import Tree, commands, Loader
 from .logger import logger
+
+
+Loader.load_all()
+
+DEBUG = True
 
 
 class ProxyTree:
@@ -17,17 +22,16 @@ class ProxyTree:
 
     def getter(self, name, *args):
         method = getattr(self._tree, name)
-        if not args:
-            return method()
 
         # replace task name to task object
-        argspec = getargspec(method).args
-        if len(argspec) >= 2 and argspec[1] == 'task':
-            task = self._tree._get_task_by_name(args[0])
-            if task is None:
-                self._tree.logger.error('task not found')
-                return
-            args[0] = task
+        if args:
+            argspec = getargspec(method).args
+            if len(argspec) >= 2 and argspec[1] == 'task':
+                task = self._tree._get_task_by_name(args[0])
+                if task is None:
+                    self._tree.logger.error('task not found')
+                    return
+                args[0] = task
 
         # call method
         result = method(*args)
@@ -81,6 +85,8 @@ def cli():
         try:
             result = getattr(tree, action)(*args)
         except Exception as e:
+            if DEBUG:
+                raise
             logger.critical(e)
             continue
 

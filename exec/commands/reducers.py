@@ -1,4 +1,4 @@
-from ..core import Command, commands
+from exec import Command, commands
 
 
 @commands.register

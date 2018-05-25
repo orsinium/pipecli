@@ -1,10 +1,8 @@
 import fnmatch
-from importlib import import_module
-from importlib.util import spec_from_file_location, module_from_spec
-from pathlib import Path
 from collections import namedtuple
 from .catalog import commands
 from .root import Root
+from .loader import Loader
 
 
 TreeElement = namedtuple('TreeElement', ['deepth', 'task', 'is_pointer'])
@@ -15,6 +13,7 @@ class Tree:
         self.root = Root()
         self.pointer = self.root
         self.logger = logger
+        self.loader = Loader
 
     def _get_parent(self, task=None, parent=None):
         if task is None:
@@ -117,22 +116,14 @@ class Tree:
         exists = set(commands)
         # file
         if path.endswith('.py'):
-            # get module info
-            path = Path(path)
-            if not path.exists():
+            is_loaded = self.loader.load_file(path)
+            if not is_loaded:
                 self.logger.error('file not found')
                 return []
-            module_name = path.stem
-            full_path = str(path.absolute())
-            # load module
-            spec = spec_from_file_location(module_name, full_path)
-            module = module_from_spec(spec)
-            spec.loader.exec_module(module)
         # module name
         else:
-            try:
-                import_module(path)
-            except ImportError:
+            is_loaded = self.loader.load_module(path)
+            if not is_loaded:
                 self.logger.error('module not found')
                 return []
         # return list of loaded tasks
