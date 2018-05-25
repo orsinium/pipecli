@@ -12,7 +12,10 @@ class StrTransform(Command):
     def process(self):
         while 1:
             source, message = yield
-            yield str(message)
+            if isinstance(source, bytes):
+                yield source.encode('utf-8')
+            else:
+                yield str(message)
 
 
 @commands.register
