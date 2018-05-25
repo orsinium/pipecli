@@ -1,4 +1,4 @@
-from hashlib import md5
+from hashlib import md5, sha1, sha256, sha512
 from exec import Command, commands
 
 
@@ -27,3 +27,27 @@ class MD5Hasher(Basehasher):
     """
     name = 'hash/md5'
     hasher = md5
+
+
+@commands.register
+class SHA1Hasher(Basehasher):
+    """Hash text by SHA1 algorithm
+    """
+    name = 'hash/sha1'
+    hasher = sha1
+
+
+@commands.register
+class SHA256Hasher(Basehasher):
+    """Hash text by SHA256 algorithm
+    """
+    name = 'hash/sha256'
+    hasher = sha256
+
+
+@commands.register
+class SHA512Hasher(Basehasher):
+    """Hash text by SHA512 algorithm
+    """
+    name = 'hash/sha512'
+    hasher = sha512
