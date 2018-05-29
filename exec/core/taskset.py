@@ -73,3 +73,9 @@ def task(name, task_name=None, **kwargs):
         task.name = task_name
     task.args.update(kwargs)
     return TaskSet(task)
+
+
+def chain(root_task, *other_tasks):
+    for task in other_tasks:
+        root_task.__or__(task)
+    return root_task.get()
