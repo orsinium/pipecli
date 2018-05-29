@@ -1,6 +1,6 @@
 import fnmatch
 from collections import namedtuple
-from .catalog import commands
+from .catalog import catalog
 from .root import Root
 from .loader import Loader
 
@@ -113,7 +113,7 @@ class Tree:
         return task.describe()
 
     def load(self, path):
-        exists = set(commands)
+        exists = set(catalog)
         # file
         if path.endswith('.py'):
             is_loaded = self.loader.load_file(path)
@@ -127,7 +127,7 @@ class Tree:
                 self.logger.error('module not found')
                 return []
         # return list of loaded tasks
-        loaded = set(commands) - exists
+        loaded = set(catalog) - exists
         if loaded:
             self.logger.info('loaded')
         else:
@@ -135,7 +135,7 @@ class Tree:
         return sorted(list(loaded))
 
     def list(self, pattern=None):
-        result = list(commands)
+        result = list(catalog)
         if pattern:
             result = fnmatch.filter(names=result, pattern=pattern)
         if not result:

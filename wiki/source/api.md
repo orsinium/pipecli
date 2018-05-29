@@ -5,7 +5,7 @@ from exec import task, Loader
 
 Loader.load_all()
 taskset = task('generate/integers', stop=10) | task('transform/multiply', multiplier=2)
-for message in taskset.filter('reduce/sum'):
+for message in taskset.filter('transform/multiply'):
     print(message)
 ```
 

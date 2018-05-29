@@ -1,14 +1,18 @@
 from functools import partial
-from .catalog import commands
+from .catalog import catalog
 from .root import Root
 
 
 class TaskSet:
     def __init__(self, task):
         self.root = Root()      # left task in chain
+        self.task = task        # second task in chain
         self.tail = task        # right task in chain
+
         self.tail.debug = True  # save results into task
-        self.root.subtasks.append(self.task)  # chain root and tail
+        self.tail.results = []  # save results into task
+        self.root.subtasks.append(self.tail)  # chain root and tail
+
         self.filters = []
         self.done = False
 
@@ -20,6 +24,7 @@ class TaskSet:
         self.tail.subtasks.append(other.task)
         self.tail = other.task
         self.tail.debug = True  # save results into task
+        self.tail.results = []  # save results into task
         self.done = False
         return self
 
@@ -35,8 +40,9 @@ class TaskSet:
 
     def filter(self, condition):
         if isinstance(condition, str):
-            condition = partial(self._check_name, name=condition)
+            condition = partial(self._check_name, condition)
         self.filters.append(condition)
+        return self
 
     def __iter__(self):
         if not self.done:
@@ -51,6 +57,7 @@ class TaskSet:
     def run(self):
         self.root.run()
         self.done = True
+        return self
 
     def get(self):
         return tuple(self)
@@ -60,9 +67,9 @@ class TaskSet:
 
 
 def task(name, task_name=None, **kwargs):
-    command = commands.get(name)
+    command = catalog.get(name)
     task = command()
     if task_name is not None:
         task.name = task_name
-    task.args = kwargs
+    task.args.update(kwargs)
     return TaskSet(task)
