@@ -1,8 +1,8 @@
 from collections import defaultdict
-from exec import Command, commands
+from exec import Command, catalog
 
 
-@commands.register
+@catalog.register
 class ConcatCombine(Command):
     """Concatenate strings from two or more sources.
     """

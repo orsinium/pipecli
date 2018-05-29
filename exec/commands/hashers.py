@@ -1,5 +1,5 @@
 from hashlib import md5, sha1, sha256, sha512
-from exec import Command, commands
+from exec import Command, catalog
 
 
 class Basehasher(Command):
@@ -21,7 +21,7 @@ class Basehasher(Command):
         return parser
 
 
-@commands.register
+@catalog.register
 class MD5Hasher(Basehasher):
     """Hash text by MD5 algorithm
     """
@@ -29,7 +29,7 @@ class MD5Hasher(Basehasher):
     hasher = md5
 
 
-@commands.register
+@catalog.register
 class SHA1Hasher(Basehasher):
     """Hash text by SHA1 algorithm
     """
@@ -37,7 +37,7 @@ class SHA1Hasher(Basehasher):
     hasher = sha1
 
 
-@commands.register
+@catalog.register
 class SHA256Hasher(Basehasher):
     """Hash text by SHA256 algorithm
     """
@@ -45,7 +45,7 @@ class SHA256Hasher(Basehasher):
     hasher = sha256
 
 
-@commands.register
+@catalog.register
 class SHA512Hasher(Basehasher):
     """Hash text by SHA512 algorithm
     """

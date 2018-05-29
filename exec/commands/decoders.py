@@ -1,8 +1,8 @@
 from urllib.parse import unquote_plus
-from exec import Command, commands
+from exec import Command, catalog
 
 
-@commands.register
+@catalog.register
 class URLDecoder(Command):
     """Decode URL safe string to utf-8 text
     """

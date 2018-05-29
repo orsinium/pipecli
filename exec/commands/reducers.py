@@ -1,7 +1,7 @@
-from exec import Command, commands
+from exec import Command, catalog
 
 
-@commands.register
+@catalog.register
 class SumReducer(Command):
     """Sum all numbers
     """

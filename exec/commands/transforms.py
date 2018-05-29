@@ -1,7 +1,7 @@
-from exec import Command, commands
+from exec import Command, catalog
 
 
-@commands.register
+@catalog.register
 class StrTransform(Command):
     """Transform any message to string.
     """
@@ -18,7 +18,7 @@ class StrTransform(Command):
                 yield str(message)
 
 
-@commands.register
+@catalog.register
 class MultiplyTransform(Command):
     """Multiply integer numbers to n.
     """

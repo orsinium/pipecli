@@ -1,5 +1,5 @@
 import sys
-from exec import Command, commands
+from exec import Command, catalog
 
 
 class BaseOutput(Command):
@@ -18,19 +18,19 @@ class BaseOutput(Command):
             self._file.close()
 
 
-@commands.register
+@catalog.register
 class StdoutOutput(BaseOutput):
     name = 'output/stdout'
     _file = sys.stdout
 
 
-@commands.register
+@catalog.register
 class StderrOutput(BaseOutput):
     name = 'output/stderr'
     _file = sys.stderr
 
 
-@commands.register
+@catalog.register
 class FileOutput(BaseOutput):
     name = 'output/file'
     _file = None

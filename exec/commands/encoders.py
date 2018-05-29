@@ -1,8 +1,8 @@
 from urllib.parse import quote_plus
-from exec import Command, commands
+from exec import Command, catalog
 
 
-@commands.register
+@catalog.register
 class URLEncoder(Command):
     """Encode text to URL safe string
     """

@@ -2,7 +2,7 @@ from .command import Command
 from .catalog import commands
 
 
-@commands.register
+@catalog.register
 class Root(Command):
     name = 'root'
     implement = {'root'}

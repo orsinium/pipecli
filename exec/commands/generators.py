@@ -1,9 +1,9 @@
 from string import ascii_letters
 from itertools import product
-from exec import Command, commands
+from exec import Command, catalog
 
 
-@commands.register
+@catalog.register
 class IntegersGenerator(Command):
     """Return sequence of integers from start (inclusive) to stop (inclusive) by step.
     """
@@ -23,7 +23,7 @@ class IntegersGenerator(Command):
         yield from range(start, stop + 1, step)
 
 
-@commands.register
+@catalog.register
 class WordsGenerator(Command):
     """Return sequence of symbols from start (inclusive) to stop (inclusive) length.
     """

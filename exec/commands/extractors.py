@@ -1,8 +1,8 @@
 import re
-from exec import Command, commands
+from exec import Command, catalog
 
 
-@commands.register
+@catalog.register
 class RegexpExtractor(Command):
     """Extract substring from message by regular expression.
     """

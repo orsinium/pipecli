@@ -1,5 +1,5 @@
 import sys
-from exec import Command, commands
+from exec import Command, catalog
 
 
 class BaseInput(Command):
@@ -18,7 +18,7 @@ class BaseInput(Command):
             self._file.close()
 
 
-@commands.register
+@catalog.register
 class StdinInput(BaseInput):
     name = 'input/stdin'
     _file = sys.stdin
@@ -29,7 +29,7 @@ class StdinInput(BaseInput):
         return parser
 
 
-@commands.register
+@catalog.register
 class FileInput(BaseInput):
     name = 'input/file'
     _file = None

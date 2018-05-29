@@ -9,4 +9,4 @@ class Catalog(dict):
         return command
 
 
-commands = Catalog()
+catalog = Catalog()
