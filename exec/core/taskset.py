@@ -1,31 +1,78 @@
 from functools import partial
 from .catalog import catalog
 from .root import Root
+from ..utils import cached_property
+
+
+class Result:
+    def __init__(self, tasks):
+        self.tasks = tasks
+        self.filters = []
+        self.dirty = True
+
+    def _check_name(self, name, task):
+        # filter only last task results
+        if name is None:
+            return task.name == self.tasks.tail.name
+        # filter results by task name
+        if isinstance(name, str):
+            return task.name == name
+        # filter results by task names list
+        if isinstance(name, (list, tuple)):
+            return task.name in name
+        raise TypeError('invalid name type')
+
+    def filter(self, condition=None):
+        if isinstance(condition, (str, list, tuple)) or condition is None:
+            condition = partial(self._check_name, condition)
+        self.filters.append(condition)
+        # self.dirty = True   # invalidate cache
+        return self
+
+    def all(self):
+        self.filters = []
+
+    def __iter__(self):
+        # update cache
+        if self.dirty:
+            self.tasks.run()
+            self.dirty = False
+        # get results from tasks
+        for task in self.tasks:
+            # drop if output disabled
+            if not task.debug:
+                continue
+            # drop if some check from filters not passed
+            for check in self.filters:
+                if not check(task):
+                    break
+            else:
+                yield from task.results
+
+    def __repr__(self):
+        state = 'Dirty' if self.dirty else 'Cached'
+        return '{}Result({} filters)'.format(state, len(self.filters))
 
 
 class TaskSet:
     def __init__(self, task):
-        self.root = Root()      # left task in chain
-        self.task = task        # second task in chain
+        self.head = task        # left task in chain
         self.tail = task        # right task in chain
 
-        self.tail.debug = True  # save results into task
-        self.tail.results = []  # save results into task
-        self.root.subtasks.append(self.tail)  # chain root and tail
+    @cached_property
+    def root(self):
+        root = Root()
+        root.subtasks.append(self.head)
+        return root
 
-        self.filters = []
-        self.done = False
-
-    @staticmethod
-    def _check_name(name, task):
-        return task.name == name
+    @cached_property
+    def result(self):
+        return Result(self)
 
     def __or__(self, other):
-        self.tail.subtasks.append(other.task)
-        self.tail = other.task
-        self.tail.debug = True  # save results into task
-        self.tail.results = []  # save results into task
-        self.done = False
+        self.tail.subtasks.append(other.head)
+        self.tail = other.head
+        self.result.dirty = True    # invalidate cache
         return self
 
     @classmethod
@@ -34,44 +81,34 @@ class TaskSet:
         if task.subtasks:
             yield from cls._chain(task.subtasks[0])
 
-    @property
-    def chain(self):
-        return self._chain(self.root)
-
-    def filter(self, condition):
-        if isinstance(condition, str):
-            condition = partial(self._check_name, condition)
-        self.filters.append(condition)
-        return self
-
     def __iter__(self):
-        if not self.done:
-            self.run()
-        for task in self.chain:
-            for check in self.filters:
-                if not check(task):
-                    break
-            else:
-                yield from task.results
+        return self._chain(self.root)
 
     def run(self):
         self.root.run()
-        self.done = True
         return self
 
-    def get(self):
-        return tuple(self)
-
     def __str__(self):
-        self.tail.name
+        if self.head == self.tail:
+            return self.head.name
+        return '{} -> ... -> {}'.format(self.head.name, self.tail.name)
+
+    def __repr__(self):
+        return 'TaskSet({})'.format(self)
 
 
-def task(name, task_name=None, **kwargs):
-    command = catalog.get(name)
-    task = command()
+def task(command, task_name=None, *, args=None, output=True, **kwargs):
+    if args and kwargs:
+        raise ValueError('do not use args with **kwargs')
+    # get command by name
+    if isinstance(command, str):
+        command = catalog.get(command)
+    task = command(debug=output)
     if task_name is not None:
         task.name = task_name
     task.args.update(kwargs)
+    if args:
+        task.args.update(args)
     return TaskSet(task)
 
 
