@@ -46,9 +46,9 @@ def test_pipe():
     test2 = MakeDouble()
     test3 = MakeStr()
 
-    test2.subtasks.append(test3)
-    test1.subtasks.append(test2)
-    root.subtasks.append(test1)
+    test2.add(test3)
+    test1.add(test2)
+    root.add(test1)
 
     root.entrypoint()
 

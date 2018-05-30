@@ -62,7 +62,7 @@ class TaskSet:
     @cached_property
     def root(self):
         root = Root()
-        root.subtasks.append(self.head)
+        root.add(self.head)
         return root
 
     @cached_property
@@ -70,7 +70,7 @@ class TaskSet:
         return Result(self)
 
     def __or__(self, other):
-        self.tail.subtasks.append(other.head)
+        self.tail.add(other.head)
         self.tail = other.head
         self.result.dirty = True    # invalidate cache
         return self

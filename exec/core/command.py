@@ -152,3 +152,6 @@ class Command:
             return descr
         defaults = '\n'.join(sorted(defaults))
         return descr + '\nCurrent values:\n' + defaults
+
+    def add(self, task):
+        self.subtasks.append(task)

@@ -5,9 +5,6 @@ from os.path import abspath
 
 
 class Loader:
-    def __init__(self, logger):
-        self.logger = logger
-
     @staticmethod
     def load_module(name):
         try:

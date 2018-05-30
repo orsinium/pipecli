@@ -47,7 +47,7 @@ class Tree:
 
     def push(self, command, *args):
         task = command()
-        self.pointer.subtasks.append(task)
+        self.pointer.add(task)
         self.pointer = task
         self.logger.info('pushed')
         if args:

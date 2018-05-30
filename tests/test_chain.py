@@ -12,8 +12,8 @@ def chain():
     generator.update_args(['--stop', '3'])
     transform = MultiplyTransform(debug=True)
 
-    root.subtasks.append(generator)
-    generator.subtasks.append(transform)
+    root.add(generator)
+    generator.add(transform)
     return root
 
 
@@ -40,7 +40,7 @@ def test_two_branches(chain):
 
     transform2 = MultiplyTransform(debug=True)
     transform2.update_args(['-n', '4'])
-    generator.subtasks.append(transform2)
+    generator.add(transform2)
 
     chain.run()
     assert generator.results == [1, 2, 3]
@@ -52,7 +52,7 @@ def test_propagation(chain):
     generator = chain.subtasks[0]
     transform = generator.subtasks[0]
     transform2 = MultiplyTransform(debug=True)
-    transform.subtasks.append(transform2)
+    transform.add(transform2)
 
     chain.run()
     assert generator.results == [1, 2, 3]
