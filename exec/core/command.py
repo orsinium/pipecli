@@ -154,4 +154,6 @@ class Command:
         return descr + '\nCurrent values:\n' + defaults
 
     def add(self, task):
+        """Add new subtask into command's subtasks list
+        """
         self.subtasks.append(task)
