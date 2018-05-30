@@ -157,3 +157,6 @@ class Command:
         """Add new subtask into command's subtasks list
         """
         self.subtasks.append(task)
+
+    def __repr__(self):
+        return 'Task({})'.format(self.name)
