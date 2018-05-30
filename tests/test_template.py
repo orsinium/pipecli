@@ -23,3 +23,32 @@ def test_export_task():
     assert isinstance(new_root, Root)
     assert len(new_root.subtasks) == 1
     assert new_root.subtasks[0].name == task.name
+
+
+def test_export_file(tmpdir):
+    root = Root()
+    task = IntegersGenerator()
+    root.add(task)
+    template = Template.from_task(root)
+    template.to_file(str(tmpdir))
+
+    assert {path.basename for path in tmpdir.listdir()} == {'template.yml', 'config.ini'}
+
+    with tmpdir.join('template.yml').open() as f:
+        document = f.read()
+    assert document.startswith('version:')
+    assert 'tasks:' in document
+
+
+def test_import_file(tmpdir):
+    root = Root()
+    task = IntegersGenerator()
+    root.add(task)
+    template = Template.from_task(root)
+    template.to_file(str(tmpdir))
+
+    Template.from_file(str(tmpdir))
+    new_root = template.to_task()
+    assert isinstance(new_root, Root)
+    assert len(new_root.subtasks) == 1
+    assert new_root.subtasks[0].name == task.name

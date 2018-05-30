@@ -16,6 +16,17 @@ CONFIG_NAME = 'config.ini'
 BASE_INI = "[defaults]\n\n"
 
 
+# https://pyyaml.org/wiki/PyYAMLDocumentation
+try:
+    from yaml import CDumper as Dumper
+except ImportError:
+    from yaml import Dumper
+
+
+# https://gist.github.com/oglops/c70fb69eef42d40bed06
+Dumper.add_representer(OrderedDict, lambda dumper, data: dumper.represent_dict(data.items()))
+
+
 class Template:
     version = 1
 
@@ -64,7 +75,7 @@ class Template:
         config.read(str(config_path))
 
         # render yaml
-        template = Environment.from_string(document)
+        template = Environment().from_string(document)
         env = config['defaults']
         env.update(dict(os.environ))
         document = template.render(**env)
