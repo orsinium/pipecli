@@ -51,6 +51,7 @@ class Template:
                 ('name', task.name),
                 ('parent', parent.name),
                 ('command', task.__class__.name),
+                ('sources', sorted(task.sources)),
                 ('args', args),
             )))
         return cls(OrderedDict((
@@ -98,6 +99,7 @@ class Template:
             task = command()
             task.name = task_info['name']
             task.args = task_info['args']
+            task.sources = frozenset(task_info['sources'])
 
             tasks[task.name] = task
             childs[task_info['parent']].append(task)

@@ -1,15 +1,19 @@
 version: 1
 tasks:
-- name: generate/integers
+- name: generator
   parent: root
   command: generate/integers
+  sources:
+  - root
   args:
     start: 1
     step: 1
     stop: 5
 - name: transform/multiply
-  parent: generate/integers
+  parent: generator
   command: transform/multiply
+  sources:
+  - generator
   args:
     multiplier: 2
 include:
