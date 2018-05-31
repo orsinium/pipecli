@@ -4,3 +4,4 @@ wiki/build/
 build/
 dist/
 .pytest_cache
+*.egg-info
