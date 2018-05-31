@@ -1,7 +1,7 @@
 # API usage
 
 ```python
-from exec import task, Loader
+from pros import task, Loader
 
 Loader.load_all()
 taskset = task('generate/integers', stop=10) | task('transform/multiply', multiplier=2)

@@ -1,5 +1,5 @@
 from hashlib import md5, sha1, sha256, sha512
-from exec import Command, catalog
+from pros import Command, catalog
 
 
 class Basehasher(Command):

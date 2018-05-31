@@ -1,5 +1,5 @@
-from exec import Template, Root
-from exec.commands.generators import IntegersGenerator
+from pros import Template, Root
+from pros.commands.generators import IntegersGenerator
 
 
 def test_import_task():
@@ -8,7 +8,7 @@ def test_import_task():
     root.add(task)
     assert list(Template._iterate_tasks(root)) == [(root, task)]
     template = Template.from_task(root)
-    assert template.struct['include'] == ['exec.commands.generators']
+    assert template.struct['include'] == ['pros.commands.generators']
     assert len(template.struct['tasks']) == 1
     assert template.struct['tasks'][0]['name'] == 'generate/integers'
 

@@ -1,5 +1,5 @@
 import re
-from exec import Command, catalog
+from pros import Command, catalog
 
 
 @catalog.register

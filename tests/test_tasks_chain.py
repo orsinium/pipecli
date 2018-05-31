@@ -1,5 +1,5 @@
-from exec.core.chain import task, Chain
-from exec.commands.generators import IntegersGenerator
+from pros.core.chain import task, Chain
+from pros.commands.generators import IntegersGenerator
 
 
 def test_task():

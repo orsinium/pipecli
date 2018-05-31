@@ -1,4 +1,4 @@
-from exec import Command, Root
+from pros import Command, Root
 
 
 class MakeInit(Command):

@@ -1,5 +1,5 @@
 from urllib.parse import quote_plus
-from exec import Command, catalog
+from pros import Command, catalog
 
 
 @catalog.register

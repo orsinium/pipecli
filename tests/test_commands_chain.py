@@ -1,8 +1,8 @@
 import pytest
 
-from exec import Root
-from exec.commands.generators import IntegersGenerator
-from exec.commands.transforms import MultiplyTransform
+from pros import Root
+from pros.commands.generators import IntegersGenerator
+from pros.commands.transforms import MultiplyTransform
 
 
 @pytest.fixture

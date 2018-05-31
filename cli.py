@@ -1,4 +1,4 @@
-from exec.cli import cli
+from pros.cli import cli
 
 
 cli()

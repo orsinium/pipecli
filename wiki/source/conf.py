@@ -28,7 +28,7 @@ source_suffix = ['.rst', '.md']
 
 master_doc = 'index'
 
-project = 'exec'
+project = 'pros'
 copyright = '2018, @orsinium'
 author = '@orsinium'
 
@@ -78,7 +78,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'execdoc'
+htmlhelp_basename = 'prosdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -105,7 +105,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'exec.tex', 'exec documentation',
+    (master_doc, 'pros.tex', 'pros documentation',
      '@orsinium', 'manual'),
 ]
 
@@ -115,7 +115,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'exec', 'exec documentation',
+    (master_doc, 'pros', 'pros documentation',
      [author], 1)
 ]
 
@@ -126,10 +126,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'exec', 'exec documentation',
-     author, 'exec', 'One line description of project.',
+    (master_doc, 'pros', 'pros documentation',
+     author, 'pros', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
