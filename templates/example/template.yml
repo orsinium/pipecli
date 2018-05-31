@@ -1,0 +1,17 @@
+version: 1
+tasks:
+- name: generate/integers
+  parent: root
+  command: generate/integers
+  args:
+    start: 1
+    step: 1
+    stop: 5
+- name: transform/multiply
+  parent: generate/integers
+  command: transform/multiply
+  args:
+    multiplier: 2
+include:
+- generators
+- transforms

@@ -3,6 +3,7 @@ from collections import namedtuple
 from .catalog import catalog
 from .root import Root
 from .loader import Loader
+from .template import Template
 
 
 TreeElement = namedtuple('TreeElement', ['deepth', 'task', 'is_pointer'])
@@ -141,6 +142,13 @@ class Tree:
         if not result:
             self.logger.warning('no matches found')
         return sorted(result)
+
+    def save(self, path):
+        Template.from_task(self.root).to_file(path)
+
+    def restore(self, path):
+        self.root = Template.from_file(path).to_task()
+        self.pointer = self.tree()[-1].task
 
     def run(self):
         self.root.run()

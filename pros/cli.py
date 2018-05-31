@@ -7,7 +7,7 @@ from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.contrib.completers import WordCompleter
 # from prompt_toolkit import print_formatted_text, HTML
 
-from .core import Tree, commands, Loader
+from .core import Tree, catalog, Loader
 from .logger import logger
 
 
@@ -43,10 +43,10 @@ class ProxyTree:
         return partial(self.getter, name)
 
     def push(self, command_name, *args):
-        if command_name not in commands:
+        if command_name not in catalog:
             self._tree.logger.error('command not found')
             return
-        command = commands[command_name]
+        command = catalog[command_name]
         return self._tree.push(command, *args)
 
     def tree(self):
@@ -63,7 +63,7 @@ class ProxyTree:
 
 
 ACTIONS = tuple(action for action in dir(Tree) if not action.startswith('_'))
-COMMANDS = tuple(commands.keys())
+COMMANDS = tuple(catalog)
 
 tree = ProxyTree(logger=logger)
 history = InMemoryHistory()
