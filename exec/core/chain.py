@@ -54,7 +54,7 @@ class Result:
         return '{}Result({} filters)'.format(state, len(self.filters))
 
 
-class TaskSet:
+class Chain:
     def __init__(self, task):
         self.head = task        # left task in chain
         self.tail = task        # right task in chain
@@ -94,7 +94,7 @@ class TaskSet:
         return '{} -> ... -> {}'.format(self.head.name, self.tail.name)
 
     def __repr__(self):
-        return 'TaskSet({})'.format(self)
+        return 'Chain({})'.format(self)
 
 
 def task(command, task_name=None, *, args=None, output=True, **kwargs):
@@ -109,7 +109,7 @@ def task(command, task_name=None, *, args=None, output=True, **kwargs):
     task.args.update(kwargs)
     if args:
         task.args.update(args)
-    return TaskSet(task)
+    return Chain(task)
 
 
 def chain(root_task, *other_tasks):

@@ -1,14 +1,14 @@
-from exec.core.taskset import task, TaskSet
+from exec.core.chain import task, Chain
 from exec.commands.generators import IntegersGenerator
 
 
 def test_task():
     taskset = task('generate/integers', stop=10)
-    assert isinstance(taskset, TaskSet)
+    assert isinstance(taskset, Chain)
     assert isinstance(taskset.head, IntegersGenerator)
 
     taskset = task(IntegersGenerator, stop=10)
-    assert isinstance(taskset, TaskSet)
+    assert isinstance(taskset, Chain)
     assert isinstance(taskset.head, IntegersGenerator)
 
 
