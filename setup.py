@@ -16,7 +16,7 @@ setup(
     keywords='pipe pipeline chain tree cli',
 
     packages=['pros', 'pros.commands', 'pros.core'],
-    requires=['jinja2', 'prompt_toolkit', 'PyYAML'],
+    requires=['jinja2', 'prompt_toolkit', 'PyYAML', 'deal>=2.1'],
 
     url='https://github.com/orsinium/pros',
     download_url='https://github.com/orsinium/pros/tarball/master',

@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+from deal import pre
 
 
 class Command:
@@ -10,7 +11,8 @@ class Command:
     implement = frozenset()     # implemented protocols: http, grep, facebook...
     sources = frozenset()       # source messages protocols
 
-    def __init__(self, debug=False):
+    @pre(lambda self, *args, **kwargs: type(self.name) is str, 'command name must be str')
+    def __init__(self, *, debug=False):
         self.flush()
         self.debug = debug
         if debug:
@@ -21,8 +23,6 @@ class Command:
         """
         self.subtasks = []
         self.args = {}
-        if self.__class__.name is None:
-            raise ValueError('name can not be None')
         self.name = self.__class__.name
         self.parser = self.get_parser(ArgumentParser(
             prog='args',
@@ -132,11 +132,12 @@ class Command:
         """
         return ()
 
+    @pre(lambda self, args: type(args) is list, 'args must be list')
     def update_args(self, args):
         """Update `args` dict from user input
         """
         args, _argv = self.parser.parse_known_args(args)
-        return self.args.update(dict(args._get_kwargs()))
+        self.args.update(dict(args._get_kwargs()))
 
     def describe(self):
         """Return task text description.

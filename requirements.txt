@@ -1,3 +1,4 @@
+deal>=2.1
 jinja2
 prompt_toolkit
 PyYAML

@@ -77,7 +77,7 @@ class Template:
 
         # render yaml
         template = Environment().from_string(document)
-        env = config['defaults']
+        env = dict(config['defaults'])
         env.update(dict(os.environ))
         document = template.render(**env)
 

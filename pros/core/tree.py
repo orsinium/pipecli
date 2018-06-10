@@ -73,13 +73,18 @@ class Tree:
         self.logger.error('task not found in tree')
         return False
 
-    def reset(self, *args):
+    def reset(self):
         self.root = Root()
         self.pointer = self.root
         self.logger.info('reseted')
         return True
 
     def rename(self, task=None, name=None):
+        """
+        Examples:
+        tree.rename('new name')
+        tree.rename(some_task, 'new name')
+        """
         if type(task) is str and name is None:
             task, name = name, task
         if name is None:
