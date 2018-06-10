@@ -1,5 +1,4 @@
 # built-in
-import configparser
 import os
 from collections import OrderedDict, defaultdict
 from pathlib import Path
@@ -15,12 +14,10 @@ from .root import Root
 
 
 TEMPLATE_NAME = 'template.yml'
-
-CONFIG_NAME = 'config.ini'
-# CONFIG_CONTENT = "[env]\n"
-
-DEFAULTS_NAME = 'defaults.ini'
-DEFAULTS_CONTENT = "[defaults]\n\n"
+CONFIG_NAME = 'config.yml'
+CONFIG_CONTENT = '# This file must be ignored into your VCS. Place your local setings here.\n'
+DEFAULTS_NAME = 'defaults.yml'
+DEFAULTS_CONTENT = '# This file contains default vars for template.\n'
 
 
 # https://pyyaml.org/wiki/PyYAMLDocumentation
@@ -71,18 +68,14 @@ class Template:
     def _get_env(path):
         # defaults
         config_path = path / DEFAULTS_NAME
-        config = configparser.ConfigParser()
-        config.read(str(config_path))
-        env = dict(config['defaults'])
-        if 'env' in config:
-            env.update(config['env'])
+        with config_path.open() as f:
+            env = yaml.load(f.read()) or dict()
 
         # config
         config_path = path / CONFIG_NAME
         if config_path.exists():
-            config = configparser.ConfigParser()
-            config.read(str(config_path))
-            env.update(config['env'])
+            with config_path.open() as f:
+                env.update(yaml.load(f.read()) or dict())
 
         # env
         env.update(dict(os.environ))
@@ -152,3 +145,7 @@ class Template:
         if not config_path.exists():
             with config_path.open('w') as f:
                 f.write(DEFAULTS_CONTENT)
+        config_path = path / CONFIG_NAME
+        if not config_path.exists():
+            with config_path.open('w') as f:
+                f.write(CONFIG_CONTENT)
