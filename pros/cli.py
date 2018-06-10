@@ -1,13 +1,16 @@
+# built-in
 from functools import partial
 from inspect import getargspec
 
+# external
 from prompt_toolkit import prompt
-from prompt_toolkit.history import InMemoryHistory
+# from prompt_toolkit import print_formatted_text, HTML
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.contrib.completers import WordCompleter
-# from prompt_toolkit import print_formatted_text, HTML
+from prompt_toolkit.history import InMemoryHistory
 
-from .core import Tree, catalog, Loader
+# project
+from .core import Loader, Tree, catalog
 from .logger import logger
 
 

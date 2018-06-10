@@ -1,8 +1,11 @@
+# built-in
 import fnmatch
 from collections import namedtuple
+
+# project
 from .catalog import catalog
-from .root import Root
 from .loader import Loader
+from .root import Root
 from .template import Template
 
 

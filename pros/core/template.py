@@ -1,11 +1,14 @@
+# built-in
 import configparser
 import os
 from collections import OrderedDict, defaultdict
 from pathlib import Path
 
+# external
 import yaml
 from jinja2 import Environment
 
+# project
 from .catalog import catalog
 from .loader import Loader
 from .root import Root

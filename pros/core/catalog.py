@@ -1,5 +1,8 @@
-from .command import Command
+# external
 from deal import pre
+
+# project
+from .command import Command
 
 
 class Catalog(dict):

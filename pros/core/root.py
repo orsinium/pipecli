@@ -1,5 +1,6 @@
-from .command import Command
+# project
 from .catalog import catalog
+from .command import Command
 
 
 @catalog.register

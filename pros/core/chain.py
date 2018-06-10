@@ -1,7 +1,10 @@
+# built-in
 from functools import partial
+
+# project
+from ..utils import cached_property
 from .catalog import catalog
 from .root import Root
-from ..utils import cached_property
 
 
 class Result:
