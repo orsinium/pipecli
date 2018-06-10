@@ -32,7 +32,7 @@ def test_export_file(tmpdir):
     template = Template.from_task(root)
     template.to_file(str(tmpdir))
 
-    assert {path.basename for path in tmpdir.listdir()} == {'template.yml', 'config.ini'}
+    assert {path.basename for path in tmpdir.listdir()} == {'template.yml', 'defaults.ini'}
 
     with tmpdir.join('template.yml').open() as f:
         document = f.read()
