@@ -12,8 +12,12 @@ from .root import Root
 
 
 TEMPLATE_NAME = 'template.yml'
+
 CONFIG_NAME = 'config.ini'
-BASE_INI = "[defaults]\n\n"
+# CONFIG_CONTENT = "[env]\n"
+
+DEFAULTS_NAME = 'defaults.ini'
+DEFAULTS_CONTENT = "[defaults]\n\n"
 
 
 # https://pyyaml.org/wiki/PyYAMLDocumentation
@@ -60,6 +64,27 @@ class Template:
             ('include', sorted(list(includes))),
         )))
 
+    @staticmethod
+    def _get_env(path):
+        # defaults
+        config_path = path / DEFAULTS_NAME
+        config = configparser.ConfigParser()
+        config.read(str(config_path))
+        env = dict(config['defaults'])
+        if 'env' in config:
+            env.update(config['env'])
+
+        # config
+        config_path = path / CONFIG_NAME
+        if config_path.exists():
+            config = configparser.ConfigParser()
+            config.read(str(config_path))
+            env.update(config['env'])
+
+        # env
+        env.update(dict(os.environ))
+        return env
+
     @classmethod
     def from_file(cls, path):
         if not isinstance(path, Path):
@@ -70,15 +95,9 @@ class Template:
         with template_path.open() as f:
             document = f.read()
 
-        # read config
-        config_path = path / CONFIG_NAME
-        config = configparser.ConfigParser()
-        config.read(str(config_path))
-
         # render yaml
         template = Environment().from_string(document)
-        env = dict(config['defaults'])
-        env.update(dict(os.environ))
+        env = cls._get_env(path)
         document = template.render(**env)
 
         # read yaml
@@ -126,6 +145,7 @@ class Template:
             f.write(document)
 
         # write config
-        config_path = path / CONFIG_NAME
-        with config_path.open('w') as f:
-            f.write(BASE_INI)
+        config_path = path / DEFAULTS_NAME
+        if not config_path.exists():
+            with config_path.open('w') as f:
+                f.write(DEFAULTS_CONTENT)
